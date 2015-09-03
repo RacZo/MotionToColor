@@ -26,35 +26,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+/**
+ * Demonstrates how to use the accelerometer to detect motion (when the device has been shaken) and get colors.
+ * Created by RacZo on 9/3/15.
+ */
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager mSensorManager;
-    private Sensor mSensor;
-
-    private float[] gravity;
-    private float[] linear_acceleration;
-
     private TextView textViewColor;
-
     private static final String SPACE = " ";
-
     private long lastUpdate;
-
     private static final String LOG_TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        //mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
         lastUpdate = System.currentTimeMillis();
-
         textViewColor = (TextView) findViewById(R.id.text_view_color);
         textViewColor.setText(getString(R.string.label_hex) + SPACE + "#ff000000");
-
     }
 
     @Override
