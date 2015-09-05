@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -34,6 +35,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private SensorManager mSensorManager;
     private TextView textViewColor;
+    private TextView textViewAxisX;
+    private TextView textViewAxisY;
+    private TextView textViewAxisZ;
+    private LinearLayout linearLayout;
+
     private static final String SPACE = " ";
     private long lastUpdate;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -46,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         lastUpdate = System.currentTimeMillis();
         textViewColor = (TextView) findViewById(R.id.text_view_color);
         textViewColor.setText(getString(R.string.label_hex) + SPACE + "#ff000000");
+        textViewAxisX = (TextView) findViewById(R.id.text_view_x_axis);
+        textViewAxisY = (TextView) findViewById(R.id.text_view_y_axis);
+        textViewAxisZ = (TextView) findViewById(R.id.text_view_z_axis);
+        linearLayout = (LinearLayout) findViewById(R.id.linear_layout);
     }
 
     @Override
@@ -112,16 +122,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float y = values[1];
         float z = values[2];
 
-        Log.d(LOG_TAG, "X: " + x + ", Y: " + y + ", Z: " + z);
-
-        float accelationSquareRoot = (x * x + y * y + z * z)
+        float accelerationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
         long actualTime = event.timestamp;
-        if (accelationSquareRoot >= 2) {
+        if (accelerationSquareRoot >= 2) {
             if (actualTime - lastUpdate < 200) {
                 return;
             }
             lastUpdate = actualTime;
+
+            textViewAxisX.setText(getString(R.string.label_x) + SPACE + x);
+            textViewAxisY.setText(getString(R.string.label_y) + SPACE + y);
+            textViewAxisZ.setText(getString(R.string.label_z) + SPACE + z);
+            Log.d(LOG_TAG, "X: " + x + ", Y: " + y + ", Z: " + z);
 
             x = values[0] * 100;
             y = values[1] * 100;
@@ -131,8 +144,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int green = Math.abs(Math.round((y * 256) / 256));
             int blue = Math.abs(Math.round((z * 256) / 256));
             Log.d(LOG_TAG, "R: " + red + ", G: " + green + ", B: " + blue);
+
             int color = Color.argb(255, red, green, blue);
-            textViewColor.setBackgroundColor(color);
+            linearLayout.setBackgroundColor(color);
             textViewColor.setText(getString(R.string.label_hex) + SPACE + Integer.toHexString(color));
 
         }

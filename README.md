@@ -2,6 +2,10 @@
 
 Demonstrates how to use the accelerometer to detect motion (when the device has been shaken) and get colors.
 
+
+![](motion-to-color.png)
+
+
 License
 -------
 Copyright (c) 2015 Oscar Salguero www.oscarsalguero.com
