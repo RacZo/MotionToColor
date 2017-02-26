@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView textViewAxisZ;
     private LinearLayout linearLayout;
 
+    private static final String DEFAULT_COLOR = "#FF000000";
     private static final String SPACE = " ";
     private long lastUpdate;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lastUpdate = System.currentTimeMillis();
         textViewColor = (TextView) findViewById(R.id.text_view_color);
-        textViewColor.setText(getString(R.string.label_hex) + SPACE + "#ff000000");
+        textViewColor.setText(getString(R.string.label_hex) + SPACE + DEFAULT_COLOR);
         textViewAxisX = (TextView) findViewById(R.id.text_view_x_axis);
         textViewAxisY = (TextView) findViewById(R.id.text_view_y_axis);
         textViewAxisZ = (TextView) findViewById(R.id.text_view_z_axis);
@@ -60,16 +61,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case R.id.action_about:
@@ -92,9 +89,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     @Override
     protected void onResume() {
@@ -113,11 +108,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager.unregisterListener(this);
     }
 
+    /**
+     * Gets coordinates values from accelerometer
+     */
     private void getAccelerometer(SensorEvent event) {
 
         float[] values = event.values;
 
-        // Movement
+        // Motion
         float x = values[0];
         float y = values[1];
         float z = values[2];
@@ -130,26 +128,60 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return;
             }
             lastUpdate = actualTime;
-
-            textViewAxisX.setText(getString(R.string.label_x) + SPACE + x);
-            textViewAxisY.setText(getString(R.string.label_y) + SPACE + y);
-            textViewAxisZ.setText(getString(R.string.label_z) + SPACE + z);
-            Log.d(LOG_TAG, "X: " + x + ", Y: " + y + ", Z: " + z);
-
+            // Coordinates
             x = values[0] * 100;
             y = values[1] * 100;
             z = values[2] * 100;
 
-            int red = Math.abs(Math.round((x * 256) / 256));
-            int green = Math.abs(Math.round((y * 256) / 256));
-            int blue = Math.abs(Math.round((z * 256) / 256));
-            Log.d(LOG_TAG, "R: " + red + ", G: " + green + ", B: " + blue);
-
-            int color = Color.argb(255, red, green, blue);
-            linearLayout.setBackgroundColor(color);
-            textViewColor.setText(getString(R.string.label_hex) + SPACE + Integer.toHexString(color));
+            updateUI(x, y, z);
 
         }
 
     }
+
+    /**
+     * Updates the UI with a new color
+     *
+     * @param x a float value with the accelerometer's X coordinate
+     * @param y a float value with the accelerometer's Y coordinate
+     * @param z a float value with the accelerometer's Z coordinate
+     */
+    private void updateUI(float x, float y, float z) {
+
+        textViewAxisX.setText(getString(R.string.label_x) + SPACE + x);
+
+        textViewAxisY.setText(getString(R.string.label_y) + SPACE + y);
+
+        textViewAxisZ.setText(getString(R.string.label_z) + SPACE + z);
+
+        Log.d(LOG_TAG, "X: " + x + ", Y: " + y + ", Z: " + z);
+
+        int color = generateColor(x, y, z);
+
+        linearLayout.setBackgroundColor(color);
+
+        textViewColor.setText(getString(R.string.label_hex) + SPACE + Integer.toHexString(color));
+
+    }
+
+    /**
+     * Generates a color using the given accelerometer coordinates
+     *
+     * @param x a float value with the accelerometer's X coordinate
+     * @param y a float value with the accelerometer's Y coordinate
+     * @param z a float value with the accelerometer's Z coordinate
+     * @return color
+     */
+    private int generateColor(float x, float y, float z) {
+
+        // RGB values
+        int red = Math.abs(Math.round((x * 256) / 256));
+        int green = Math.abs(Math.round((y * 256) / 256));
+        int blue = Math.abs(Math.round((z * 256) / 256));
+
+        Log.d(LOG_TAG, "R: " + red + ", G: " + green + ", B: " + blue);
+
+        return Color.argb(255, red, green, blue);
+    }
+
 }
