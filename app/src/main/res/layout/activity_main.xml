@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/text_view_color_text_size" />
 

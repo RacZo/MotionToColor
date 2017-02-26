@@ -2,8 +2,9 @@
 
 Demonstrates how to use the accelerometer to detect motion (when the device has been shaken) and create colors with it.
 
+<img src="media/motion-to-color.gif" width=270>
 
-![Motion To Color](media/motion-to-color.png)
+[![Get it on Google Play](media/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.oscarsalguero.motiontocolor)
 
 
 License
